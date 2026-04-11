@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <style>
+body { font-family: Arial; text-align: center; background: #f4f4f4; }
+input { padding: 10px; width: 200px; margin-top: 20px; }
+button { padding: 10px; margin-left: 5px; }
+ul { list-style: none; padding: 0; }
+li { background: white; margin: 10px; padding: 10px; border-radius: 5px; cursor: pointer; }
+li:hover { background: #d3f4ff; }
+</style>
+<head>
+    <title>To Do List</title>
+</head>
+
+<body>
+
+<h2>قائمة المهام</h2>
+
+<input type="text" id="taskInput" placeholder="اكتب مهمة...">
+<button onclick="addTask()">إضافة</button>
+
+<ul id="taskList"></ul>
+
+<script>
+let taskList = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(taskList));
+}
+
+function renderTasks() {
+    const ul = document.getElementById("taskList");
+    ul.innerHTML = "";
+    taskList.forEach((task, index) => {
+        let li = document.createElement("li");
+        li.innerText = task;
+        li.onclick = function() {
+            taskList.splice(index, 1);
+            saveTasks();
+            renderTasks();
+        }
+        ul.appendChild(li);
+    });
+}
+
+function addTask() {
+    let input = document.getElementById("taskInput");
+    let task = input.value;
+    if(task === "") return;
+    taskList.push(task);
+    saveTasks();
+    renderTasks();
+    input.value = "";
+}
+
+renderTasks();
+</script>
+
+</body>
+</html>
